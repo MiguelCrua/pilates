@@ -52,6 +52,13 @@ h1{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.2
 .sheet .df .btn{flex:1}.sheet .dh{padding-right:0}
 @keyframes su{from{transform:translateY(100%)}}
 @keyframes fi{from{opacity:0}}@keyframes zi{from{opacity:0;transform:scale(.96)}}
+.sheet{position:relative}.sx{display:none;position:absolute;top:14px;right:14px;width:32px;height:32px}
+@keyframes sr{from{transform:translateX(100%)}}
+@media (min-width:768px){
+.dr{align-items:stretch;justify-content:flex-end}
+.sheet{max-width:420px;height:100%;max-height:100%;border:0;border-left:1px solid var(--border);border-radius:0;padding:24px;animation:sr .3s cubic-bezier(.32,.72,0,1);box-shadow:-10px 0 30px rgba(0,0,0,.15)}
+.grabz{display:none}.sx{display:inline-flex}.dfc{display:none}.sheet .dh{padding-right:36px}
+}
 </style>
 </head>
 <body>
@@ -240,8 +247,8 @@ sh.addEventListener("pointerdown",e=>{if(e.target.closest(".grabz")){y0=e.client
 sh.addEventListener("pointermove",e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);sh.style.transform=`translateY(${dy}px)`});
 const dEnd=()=>{if(y0===null)return;sh.style.transition="";if(dy>100)drClose();else sh.style.transform="";y0=null};
 sh.addEventListener("pointerup",dEnd);sh.addEventListener("pointercancel",dEnd);
-function showDesc(e){drOpen(`<div class="grabz"><div class="grab"></div></div><div class="dh"><h2>${esc(e.n)}</h2><p class="muted">${NM[e.p]}</p></div><div class="sum"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="badge">${ic("clock")}${e.m} min</span></div><p class="desc">${esc(DESC[e.n]||e.d||"Sem descrição.")}</p><div class="df"><button class="btn primary cl">Fechar</button></div>`)}
-function openAdd(p){drOpen(`<div class="grabz"><div class="grab"></div></div><div class="dh"><h2>Novo exercício</h2><p class="muted">${NM[p]}</p></div><div class="fld"><label class="lbl" for="nn">Nome</label><input id="nn" placeholder="Ex.: Single Leg Kick"></div><div class="g2 fld"><div><label class="lbl" for="nl">Nível</label><select id="nl"><option value="F">Fácil</option><option value="I">Intermédio</option><option value="D">Difícil</option></select></div><div><label class="lbl" for="nm">Duração</label><select id="nm"><option value="1">1 min</option><option value="2" selected>2 min</option><option value="3">3 min</option></select></div></div><div class="fld"><label class="lbl" for="nd">Descrição (opcional)</label><textarea id="nd" rows="3" placeholder="Como se executa o exercício"></textarea></div><div class="df"><button class="btn outline cl">Cancelar</button><button class="btn primary" id="ok">Adicionar</button></div>`);
+function showDesc(e){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>${esc(e.n)}</h2><p class="muted">${NM[e.p]}</p></div><div class="sum"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="badge">${ic("clock")}${e.m} min</span></div><p class="desc">${esc(DESC[e.n]||e.d||"Sem descrição.")}</p><div class="df dfc"><button class="btn primary cl">Fechar</button></div>`)}
+function openAdd(p){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>Novo exercício</h2><p class="muted">${NM[p]}</p></div><div class="fld"><label class="lbl" for="nn">Nome</label><input id="nn" placeholder="Ex.: Single Leg Kick"></div><div class="g2 fld"><div><label class="lbl" for="nl">Nível</label><select id="nl"><option value="F">Fácil</option><option value="I">Intermédio</option><option value="D">Difícil</option></select></div><div><label class="lbl" for="nm">Duração</label><select id="nm"><option value="1">1 min</option><option value="2" selected>2 min</option><option value="3">3 min</option></select></div></div><div class="fld"><label class="lbl" for="nd">Descrição (opcional)</label><textarea id="nd" rows="3" placeholder="Como se executa o exercício"></textarea></div><div class="df"><button class="btn outline cl">Cancelar</button><button class="btn primary" id="ok">Adicionar</button></div>`);
 $("ok").onclick=()=>{const n=$("nn").value.trim();if(!n){$("nn").focus();return}const x={n,l:$("nl").value,p,o:3,m:+$("nm").value,d:$("nd").value.trim()};custom.push(x);try{localStorage.setItem("pilx",JSON.stringify(custom))}catch(_){}plan[p].push(x);drClose();render()}}
 </script>
 </body>
