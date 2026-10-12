@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gerador de Aulas de Pilates</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--background:#fafafa;--foreground:#09090b;--card:#fff;--muted:#f4f4f5;--muted-foreground:#71717a;--border:#e4e4e7;--input:#e4e4e7;--primary:#18181b;--primary-foreground:#fafafa;--secondary:#f4f4f5;--accent:#f4f4f5;--ring:#a1a1aa;--radius:.5rem;--F:#16a34a;--I:#d97706;--D:#dc2626;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--background:#09090b;--foreground:#fafafa;--card:#0c0c0f;--muted:#27272a;--muted-foreground:#a1a1aa;--border:#27272a;--input:#27272a;--primary:#fafafa;--primary-foreground:#18181b;--secondary:#27272a;--accent:#27272a;--ring:#d4d4d8;--F:#4ade80;--I:#fbbf24;--D:#f87171}}
+:root[data-theme="dark"]{--background:#09090b;--foreground:#fafafa;--card:#0c0c0f;--muted:#27272a;--muted-foreground:#a1a1aa;--border:#27272a;--input:#27272a;--primary:#fafafa;--primary-foreground:#18181b;--secondary:#27272a;--accent:#27272a;--ring:#d4d4d8;--F:#4ade80;--I:#fbbf24;--D:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--background);color:var(--foreground);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.2}h2{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:0}p{margin:0}
+.muted{color:var(--muted-foreground);font-size:13px}
+.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.logo{width:40px;height:40px;border-radius:10px;background:var(--primary);color:var(--primary-foreground);display:grid;place-items:center}.logo .i{width:20px;height:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:calc(var(--radius) + 4px);box-shadow:0 1px 2px rgba(0,0,0,.05);margin-bottom:12px;overflow:hidden}
+.cfg{padding:16px;display:grid;gap:14px}.cfg .btn{width:100%}
+.lbl{display:block;font-size:13px;font-weight:500;margin-bottom:6px}
+.tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;background:var(--muted);padding:3px;border-radius:var(--radius)}
+.tabs button{border:0;background:transparent;color:var(--muted-foreground);font:inherit;font-weight:500;padding:7px 8px;border-radius:calc(var(--radius) - 2px);cursor:pointer}
+.tabs button.on{background:var(--card);color:var(--foreground);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--radius);border:1px solid transparent;font:inherit;font-weight:500;cursor:pointer;transition:background .15s,opacity .15s}
+.btn:focus-visible,.tabs button:focus-visible,.sheet input:focus-visible,.sheet select:focus-visible,.sheet textarea:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.primary{background:var(--primary);color:var(--primary-foreground)}.primary:hover{opacity:.9}
+.outline{background:var(--card);border-color:var(--input);color:var(--foreground)}.outline:hover{background:var(--accent)}
+.ghost{background:transparent;color:var(--foreground)}.ghost:hover{background:var(--accent)}
+.icon{width:36px;height:36px;padding:0}
+.bar{display:flex;gap:8px}.bar .btn{flex:1}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid var(--border);padding:1px 9px;font-size:12px;font-weight:500;color:var(--foreground);line-height:1.6}
+.badge i{width:6px;height:6px;border-radius:50%;background:currentColor}.badge.F i{background:var(--F)}.badge.I i{background:var(--I)}.badge.D i{background:var(--D)}
+.badge .i{width:12px;height:12px}.badge.sec{background:var(--secondary);border-color:transparent;color:var(--muted-foreground)}
+.sum{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:14px 12px 12px 16px}
+.card ul{list-style:none;margin:0;padding:0}
+.ex{display:flex;align-items:center;gap:8px;padding:10px 8px 10px 16px;border-top:1px solid var(--border);cursor:pointer}.ex:hover{background:var(--accent)}
+.ex .n{flex:1;min-width:0;font-weight:500}.ex .meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.min{color:var(--muted-foreground);font-size:13px;white-space:nowrap}
+.empty{border:1px dashed var(--border);border-radius:calc(var(--radius) + 4px);padding:40px 16px;text-align:center;color:var(--muted-foreground);margin-bottom:12px}
+.dh{margin-bottom:12px;padding-right:32px}.desc{line-height:1.6}
+.df{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.sheet input,.sheet select,.sheet textarea{width:100%;height:40px;padding:0 12px;border:1px solid var(--input);border-radius:var(--radius);background:var(--card);color:var(--foreground);font:inherit;font-size:16px}
+.sheet textarea{height:auto;padding:8px 12px;resize:vertical}.fld{margin-bottom:12px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dr{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9;display:flex;align-items:flex-end;justify-content:center;animation:fi .2s}.dr[hidden]{display:none}
+.sheet{width:100%;max-width:640px;background:var(--card);border:1px solid var(--border);border-bottom:0;border-radius:16px 16px 0 0;padding:0 20px calc(24px + env(safe-area-inset-bottom,0px));max-height:85%;overflow:auto;animation:su .28s cubic-bezier(.32,.72,0,1);transition:transform .2s}
+.grabz{padding:10px 0 14px;touch-action:none;cursor:grab}.grab{width:48px;height:5px;border-radius:3px;background:var(--muted-foreground);opacity:.35;margin:0 auto}
+.sheet .df .btn{flex:1}.sheet .dh{padding-right:0}
+@keyframes su{from{transform:translateY(100%)}}
+@keyframes fi{from{opacity:0}}@keyframes zi{from{opacity:0;transform:scale(.96)}}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></div><div><h1>Aulas de Pilates</h1><p class="muted">Gerador de aulas por nível e duração</p></div></header>
+<section class="card cfg">
+<div><label class="lbl">Duração</label><div class="tabs" id="dur"><button data-d="45" class="on">45 min</button><button data-d="60">1h</button><button data-d="90">1h30</button></div></div>
+<div><label class="lbl">Nível</label><div class="tabs" id="seg"><button data-l="F" class="on">Fácil</button><button data-l="I">Intermédio</button><button data-l="D">Difícil</button></div></div>
+<button class="btn primary" id="go"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Gerar aula</button>
+</section>
+<div id="out"><div class="empty">Escolhe a duração e o nível e gera uma aula.</div></div>
+<div class="bar" id="acts" style="display:none"><button class="btn outline" id="again"><svg class="i" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Nova aula</button><button class="btn outline" id="copy"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copiar</span></button></div>
+<div id="dr" class="dr" hidden><div class="sheet" id="sheet"></div></div>
+</main>
+<script>
+const RAW=`Respiração costal|F|a|1|2
+Imprint e pélvis neutra|F|a|1|1
+Rotação da bacia|F|a|1|1
+Ponte de aquecimento|F|a|1|2
+Roll Down (rolamento da coluna)|I|a|1|2
+Roll Up (preparação)|I|a|1|2
+Círculos de ombros|F|a|2|1
+Gato-Vaca|F|a|5|2
+Prancha dinâmica|D|a|5|2
+The Hundred (pernas em mesa)|F|m|1|2
+The Hundred (pernas esticadas)|I|m|1|2
+Single Leg Circles|F|m|1|2
+Rolling Like a Ball|F|m|1|2
+Single Leg Stretch|F|m|1|2
+Double Leg Stretch|I|m|1|2
+Criss-Cross|I|m|1|2
+Dead Bug|F|m|1|2
+Ponte (Shoulder Bridge)|I|m|1|3
+Roll Up|I|m|1|2
+Scissors|D|m|1|2
+Teaser|D|m|1|3
+Roll Over|D|m|1|2
+Jackknife|D|m|1|2
+Corkscrew|I|m|1|2
+Control Balance|D|m|1|2
+Spine Stretch Forward|F|m|2|1
+Saw|I|m|2|2
+Spine Twist|F|m|2|1
+Open Leg Rocker|I|m|2|2
+Seal|I|m|2|2
+Boomerang|D|m|2|3
+Crab|D|m|2|2
+Mermaid|F|m|2|2
+Side Kick (frente/trás)|F|m|3|3
+Clam e elevação de perna|F|m|3|2
+Side Kick Series completa|I|m|3|3
+Side Bend|D|m|3|2
+Twist|D|m|3|2
+Swan Prep|F|m|4|2
+Swimming|I|m|4|2
+Swan|I|m|4|2
+Leg Pull Front|D|m|4|2
+Bird Dog|F|m|5|2
+Prancha (Plank)|I|m|5|2
+Leg Pull Back|D|m|5|2
+Push-Up|D|m|5|2
+Postura da Criança|F|f|5|2
+Alongamento isquiotibiais|F|f|1|1
+Alongamento flexores da anca|F|f|5|2
+Spine Stretch final|F|f|2|1
+Mermaid (alongamento lateral)|F|f|2|2
+Roll Down final|F|f|1|2
+Cobra / Swan suave|I|f|4|1
+Torção deitada|F|f|1|2
+Chest Lift|F|m|1|2
+Chest Lift com rotação|F|m|1|2
+Toe Taps|F|m|1|2
+Arm Arcs|F|m|1|1
+Neck Pull|I|m|1|2
+Rolling Back|F|m|2|2
+Hip Circles|D|m|2|2
+Elevação de perna lateral|F|m|3|2
+Prancha lateral|I|m|3|2
+Superman|F|m|4|2
+Elevação de perna em prono|F|m|4|2
+Rocking|I|m|4|2
+Elevação do joelho em quatro apoios|F|m|5|2`;
+const TGS={45:{a:6,m:31,f:8},60:{a:8,m:42,f:10},90:{a:10,m:68,f:12}};let dur=45,TG=TGS[45];const NM={a:"Aquecimento",m:"Trabalho principal",f:"Final · alongamento"},LN={F:"Fácil",I:"Intermédio",D:"Difícil"};
+const DESC=Object.fromEntries(`Respiração costal|Inspira expandindo as costelas para os lados e expira esvaziando-as, com o abdómen ativo.
+Imprint e pélvis neutra|Deitada, alterna entre a lombar colada ao chão e a curva natural, mexendo só a bacia.
+Rotação da bacia|Deitada com joelhos fletidos, inclina a bacia para a frente e para trás, em movimento pequeno.
+Ponte de aquecimento|Sobe a bacia vértebra a vértebra até ombros-joelhos ficarem alinhados e desce devagar.
+Roll Down (rolamento da coluna)|Em pé, deixa a cabeça cair e desenrola a coluna para baixo; sobe com o abdómen ativo.
+Roll Up (preparação)|Deitada, sobe o tronco só até meio com os braços à frente e desce com controlo.
+Círculos de ombros|Roda os ombros para trás e para a frente, com o pescoço longo.
+Gato-Vaca|Em quatro apoios, arredonda a coluna ao expirar e estende-a ao inspirar.
+Prancha dinâmica|Em prancha, desloca o peso para a frente e para trás sem perder o alinhamento.
+The Hundred (pernas em mesa)|Cabeça e ombros elevados, joelhos a 90°; bate os braços (5 inspirações, 5 expirações) até 100.
+The Hundred (pernas esticadas)|Igual, com as pernas esticadas a 45°, sem arquear a lombar.
+Single Leg Circles|Deitada, uma perna ao teto desenha círculos pequenos com a bacia estável.
+Rolling Like a Ball|Em bola, equilibrada sobre o cóccix, rola para trás e volta com a coluna arredondada.
+Single Leg Stretch|Cabeça elevada, alterna: um joelho ao peito enquanto a outra perna estende.
+Double Leg Stretch|Estende braços e pernas ao mesmo tempo e depois abraça os joelhos.
+Criss-Cross|Mãos atrás da cabeça, roda o tronco levando o cotovelo ao joelho oposto enquanto a outra perna estende.
+Dead Bug|Braços ao teto e joelhos em mesa; estende braço e perna opostos sem arquear a lombar.
+Ponte (Shoulder Bridge)|Em ponte, eleva uma perna esticada com a bacia nivelada; alterna.
+Roll Up|Braços acima da cabeça, enrola a coluna até sentares e alcança os pés; desce vértebra a vértebra.
+Scissors|Apoiada nos ombros, alterna as pernas esticadas em tesoura com a bacia estável.
+Teaser|Sobe tronco e pernas em V, equilibrada sobre o sacro, com os braços paralelos às pernas.
+Roll Over|Leva as pernas esticadas por cima da cabeça, abre-as e desce a coluna com controlo.
+Jackknife|Em Roll Over, eleva as pernas na vertical, empurrando os pés ao teto, e desce devagar.
+Corkscrew|Pernas juntas ao teto, desenha um pequeno círculo com elas sem mexer a bacia.
+Control Balance|Sobre os ombros, uma perna ao teto e a outra junto à cabeça; alterna sem mexer o tronco.
+Spine Stretch Forward|Sentada de pernas abertas, inclina-te arredondando a coluna e volta vértebra a vértebra.
+Saw|Sentada de pernas abertas, roda o tronco e leva a mão ao pé oposto, alongando a coluna.
+Spine Twist|Sentada, braços abertos, roda o tronco mantendo a coluna alta.
+Open Leg Rocker|Em V, com as pernas abertas, rola para trás e volta a equilibrar-te.
+Seal|Sentada em bola com os pés juntos, rola para trás e bate os pés três vezes.
+Boomerang|Combina Roll Over e Teaser, cruzando as pernas, e volta a sentar-te.
+Crab|Em bola, cruza as pernas, rola para trás e volta a sentar-te, alternando o cruzamento.
+Mermaid|Sentada, uma perna dobrada, inclina o tronco para o lado alongando as costelas.
+Side Kick (frente/trás)|De lado, balança a perna esticada para a frente e para trás com o tronco estável.
+Clam e elevação de perna|De lado, joelhos dobrados, abre e fecha o joelho de cima sem rodar a bacia.
+Side Kick Series completa|De lado: elevações, círculos e bicicleta da perna, com o tronco estável.
+Side Bend|Em prancha lateral, eleva a bacia e desce com controlo.
+Twist|Em prancha lateral, passa o braço de cima por baixo do corpo e roda o tronco.
+Swan Prep|De barriga para baixo, eleva o peito com a ajuda dos braços, pescoço longo.
+Swimming|De barriga para baixo, eleva braços e pernas e alterna-os em batimentos rápidos.
+Swan|Estende a coluna elevando o peito com os braços esticados e balança para a frente e para trás.
+Leg Pull Front|Em prancha, eleva uma perna de cada vez com a bacia nivelada.
+Bird Dog|Em quatro apoios, estende braço e perna opostos sem rodar a bacia.
+Prancha (Plank)|Cabeça, ombros e calcanhares alinhados, abdómen ativo; mantém a posição.
+Leg Pull Back|Em prancha invertida, eleva uma perna de cada vez mantendo a bacia alta.
+Push-Up|Desce o peito ao chão com os cotovelos junto às costelas e empurra de volta.
+Postura da Criança|Sentada nos calcanhares, desliza os braços à frente e descansa a testa no chão.
+Alongamento isquiotibiais|Deitada, eleva uma perna esticada e puxa-a suavemente na tua direção.
+Alongamento flexores da anca|Em afundo ajoelhado, empurra a anca para a frente até sentires o alongamento.
+Spine Stretch final|Sentada, deixa a coluna arredondar para a frente em relaxamento.
+Mermaid (alongamento lateral)|Sentada de lado, inclina o tronco com o braço sobre a cabeça e respira fundo.
+Roll Down final|Em pé, desce vértebra a vértebra e sobe lentamente para finalizar.
+Cobra / Swan suave|De barriga para baixo, eleva suavemente o peito alongando a frente do corpo.
+Torção deitada|Deitada, deixa os joelhos caírem para um lado, mantendo os ombros no chão.
+Chest Lift|Joelhos fletidos, eleva cabeça e ombros ao expirar, sem puxar o pescoço.
+Chest Lift com rotação|Igual, rodando o tronco alternadamente para cada lado.
+Toe Taps|Pernas em mesa; toca com um pé no chão e alterna, sem arquear a lombar.
+Arm Arcs|Deitada, leva os braços acima da cabeça e desce-os com as costelas fechadas.
+Neck Pull|Mãos atrás da cabeça, sobe até sentares, inclina-te para a frente e desce vértebra a vértebra.
+Rolling Back|Sentada com joelhos fletidos, rola a coluna até meio e volta a sentar-te.
+Hip Circles|Sentada em V, apoiada nas mãos, desenha círculos com as pernas.
+Elevação de perna lateral|De lado, eleva a perna de cima à altura da anca e desce devagar.
+Prancha lateral|Apoiada num antebraço e nos pés, mantém o corpo alinhado.
+Superman|De barriga para baixo, eleva braços e pernas em simultâneo, pescoço neutro.
+Elevação de perna em prono|De barriga para baixo, eleva uma perna esticada sem rodar a bacia.
+Rocking|De barriga para baixo, agarra os pés e balança o corpo em arco.
+Elevação do joelho em quatro apoios|Em quatro apoios, eleva ligeiramente os joelhos do chão com a coluna estável.`.split("\n").map(x=>x.split("|")));
+const W={F:{F:1},I:{F:1,I:3},D:{F:1,I:2,D:4}};
+let custom=[];try{custom=JSON.parse(localStorage.getItem("pilx")||"[]")}catch(e){}
+const lib=()=>RAW.split("\n").map(s=>{const[n,l,p,o,m]=s.split("|");return{n,l,p,o:+o,m:+m}}).concat(custom);
+let lvl="F",plan=null;
+const IC={plus:'<path d="M12 5v14M5 12h14"/>',swap:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>'};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24">${IC[n]}</svg>`;
+const $=id=>document.getElementById(id),esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function pick(cands){const w=W[lvl];const ws=cands.map(e=>w[e.l]||0);const t=ws.reduce((a,b)=>a+b,0);if(!t)return null;let r=Math.random()*t;for(let i=0;i<cands.length;i++){r-=ws[i];if(r<=0)return cands[i]}return cands[cands.length-1]}
+const fit=(p,rem,used)=>lib().filter(e=>e.p===p&&e.m<=rem&&!used.has(e.n)&&(W[lvl][e.l]||0)>0);
+function build(){const used=new Set();plan={};
+for(const p of["a","m","f"]){let rem=TG[p],list=[];
+while(true){let e=pick(fit(p,rem,used)),r=0;if(!e){e=pick(fit(p,rem,new Set(list.filter(x=>x.r).map(x=>x.n))));r=1}if(!e)break;list.push(r?{...e,r:1}:e);used.add(e.n);rem-=e.m}
+if(p!=="f")list.sort((a,b)=>a.o-b.o);plan[p]=list}
+render()}
+function swap(p,i){const used=new Set(Object.values(plan).flat().map(e=>e.n));const cur=plan[p][i];
+const sum=plan[p].reduce((a,e)=>a+e.m,0);const room=TG[p]-sum+cur.m;
+const e=pick(fit(p,room,used));if(e){plan[p][i]=e;render()}}
+function render(){const all=Object.values(plan).flat(),tot=all.reduce((a,e)=>a+e.m,0);
+let h=`<div class="sum"><span class="badge">${ic("clock")}${tot} min</span><span class="badge">${all.length} exercícios</span><span class="badge">${LN[lvl]}</span></div>`;
+for(const p of["a","m","f"]){const t=plan[p].reduce((a,e)=>a+e.m,0);
+h+=`<section class="card"><div class="ch"><div><h2>${NM[p]}</h2><p class="muted">${plan[p].length} exercícios · ${t} min</p></div><button class="btn ghost icon pl" data-p="${p}" aria-label="Adicionar exercício">${ic("plus")}</button></div><ul>`;
+plan[p].forEach((e,i)=>{h+=`<li class="ex" data-p="${p}" data-i="${i}"><div class="n">${esc(e.n)}<div class="meta"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span>${e.r?'<span class="badge sec">repetição</span>':''}</div></div><span class="min">${e.m} min</span><button class="btn ghost icon sw" data-p="${p}" data-i="${i}" aria-label="Trocar exercício">${ic("swap")}</button></li>`});
+h+=`</ul></section>`}
+$("out").innerHTML=h;$("acts").style.display="flex"}
+$("seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;lvl=b.dataset.l;[...$("seg").children].forEach(x=>x.classList.toggle("on",x===b));build()};
+$("go").onclick=$("again").onclick=build;
+$("out").onclick=e=>{const b=e.target.closest(".sw");if(b)swap(b.dataset.p,+b.dataset.i);else{const a=e.target.closest(".pl");if(a)return openAdd(a.dataset.p);const x=e.target.closest(".ex");if(x)showDesc(plan[x.dataset.p][+x.dataset.i])}};
+$("dur").onclick=e=>{const b=e.target.closest("button");if(!b)return;dur=+b.dataset.d;TG=TGS[dur];[...$("dur").children].forEach(x=>x.classList.toggle("on",x===b));build()};
+$("copy").onclick=()=>{let t=`Aula de Pilates · ${LN[lvl]} · ${dur} min\n`;for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=`- ${e.n} (${e.m} min)\n`)}
+const c=$("copy").lastChild;try{navigator.clipboard.writeText(t);c.textContent="Copiado"}catch(x){c.textContent="Não foi possível"}setTimeout(()=>c.textContent="Copiar",1500)};
+document.onkeydown=e=>{if(e.key==="Escape")drClose()};
+const dr=$("dr"),sh=$("sheet");let y0=null,dy=0;
+const drOpen=h=>{sh.innerHTML=h;sh.style.transform="";dr.hidden=false},drClose=()=>{dr.hidden=true};
+dr.onclick=e=>{if(e.target===dr||e.target.closest(".cl"))drClose()};
+sh.addEventListener("pointerdown",e=>{if(e.target.closest(".grabz")){y0=e.clientY;dy=0;sh.style.transition="none";try{sh.setPointerCapture(e.pointerId)}catch(_){}}});
+sh.addEventListener("pointermove",e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);sh.style.transform=`translateY(${dy}px)`});
+const dEnd=()=>{if(y0===null)return;sh.style.transition="";if(dy>100)drClose();else sh.style.transform="";y0=null};
+sh.addEventListener("pointerup",dEnd);sh.addEventListener("pointercancel",dEnd);
+function showDesc(e){drOpen(`<div class="grabz"><div class="grab"></div></div><div class="dh"><h2>${esc(e.n)}</h2><p class="muted">${NM[e.p]}</p></div><div class="sum"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="badge">${ic("clock")}${e.m} min</span></div><p class="desc">${esc(DESC[e.n]||e.d||"Sem descrição.")}</p><div class="df"><button class="btn primary cl">Fechar</button></div>`)}
+function openAdd(p){drOpen(`<div class="grabz"><div class="grab"></div></div><div class="dh"><h2>Novo exercício</h2><p class="muted">${NM[p]}</p></div><div class="fld"><label class="lbl" for="nn">Nome</label><input id="nn" placeholder="Ex.: Single Leg Kick"></div><div class="g2 fld"><div><label class="lbl" for="nl">Nível</label><select id="nl"><option value="F">Fácil</option><option value="I">Intermédio</option><option value="D">Difícil</option></select></div><div><label class="lbl" for="nm">Duração</label><select id="nm"><option value="1">1 min</option><option value="2" selected>2 min</option><option value="3">3 min</option></select></div></div><div class="fld"><label class="lbl" for="nd">Descrição (opcional)</label><textarea id="nd" rows="3" placeholder="Como se executa o exercício"></textarea></div><div class="df"><button class="btn outline cl">Cancelar</button><button class="btn primary" id="ok">Adicionar</button></div>`);
+$("ok").onclick=()=>{const n=$("nn").value.trim();if(!n){$("nn").focus();return}const x={n,l:$("nl").value,p,o:3,m:+$("nm").value,d:$("nd").value.trim()};custom.push(x);try{localStorage.setItem("pilx",JSON.stringify(custom))}catch(_){}plan[p].push(x);drClose();render()}}
+</script>
+</body>
+</html>
