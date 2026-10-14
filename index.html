@@ -75,6 +75,7 @@ main{padding-bottom:100px}
 .grabz{display:none}.sx{display:inline-flex}.dfc{display:none}.sheet .dh{padding-right:36px}
 }
 .tr{display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:var(--muted);border-top:1px solid var(--border);color:var(--muted-foreground);font-size:12px;line-height:1.4}.tr b{color:var(--foreground);font-weight:600}.tr .i{width:14px;height:14px;margin-top:1px}.pos{color:var(--muted-foreground);font-size:12px}
+.opts{display:grid;gap:8px;margin-top:14px}.opt{justify-content:flex-start;height:44px}
 </style>
 </head>
 <body>
@@ -86,7 +87,7 @@ main{padding-bottom:100px}
 <button class="btn primary" id="go"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Gerar aula</button>
 </section>
 <div id="out"><div class="empty">Escolhe a duração e o nível e gera uma aula.</div></div>
-<div class="bar" id="acts" style="display:none"><button class="btn outline" id="again"><svg class="i" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Nova aula</button><button class="btn outline" id="copy"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copiar</span></button></div>
+<div class="bar" id="acts" style="display:none"><button class="btn outline" id="again"><svg class="i" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Nova aula</button><button class="btn primary" id="share"><svg class="i" viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Partilhar</button></div>
 <div id="dr" class="dr" hidden><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="ts" hidden><span>Exercício removido</span><button id="tu">Anular</button></div>
 </main>
@@ -233,7 +234,7 @@ const W={F:{F:1},I:{F:1,I:3},D:{F:1,I:2,D:4}};
 let custom=[];try{custom=JSON.parse(localStorage.getItem("pilx")||"[]")}catch(e){}
 const lib=()=>RAW.split("\n").map(s=>{const[n,l,p,o,m]=s.split("|");return{n,l,p,o:+o,m:+m}}).concat(custom);
 let lvl="F",plan=null;
-const IC={plus:'<path d="M12 5v14M5 12h14"/>',swap:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',arrow:'<path d="M7 7l10 10M17 7v10H7"/>',down:'<path d="m6 9 6 6 6-6"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>'};
+const IC={plus:'<path d="M12 5v14M5 12h14"/>',swap:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',download:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>',arrow:'<path d="M7 7l10 10M17 7v10H7"/>',down:'<path d="m6 9 6 6 6-6"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>'};
 const col={};let undo=null,tt,cp=null;
 const PN={0:"Em pé",1:"De costas",2:"Sentada",3:"De lado",4:"De barriga para baixo",5:"Em quatro apoios"};
 const TR={"0>5":"Ajoelha-te e apoia as mãos no chão.","0>1":"Desce até ficares de costas, com os joelhos fletidos.","0>2":"Senta-te no tapete com a coluna alta.","0>3":"Deita-te de lado, com a cabeça apoiada no braço.","0>4":"Desce até ficares de barriga para baixo.","5>2":"Recua as ancas para os calcanhares e senta-te.","5>1":"Senta-te e deita-te de costas, vértebra a vértebra.","5>3":"Senta-te sobre uma anca e deita-te de lado.","5>4":"Desce o corpo até ficares de barriga para baixo.","5>0":"Recua e levanta-te devagar, coluna alta.","2>1":"Rola devagar para trás até ficares de costas no tapete.","1>2":"Rola para cima, vértebra a vértebra, até te sentares.","1>3":"Rola para um dos lados, apoia a cabeça no braço e empilha as ancas.","1>4":"Rola para o lado e depois para a barriga, com a testa apoiada nas mãos.","1>5":"Rola para o lado, senta-te e apoia mãos e joelhos no chão.","1>0":"Senta-te e levanta-te devagar, coluna alta.","2>3":"Deita-te de lado, com a cabeça apoiada no braço de baixo.","2>4":"Deita-te de barriga para baixo, com a testa apoiada nas mãos.","2>5":"Ajoelha-te e apoia as mãos no chão.","2>0":"Levanta-te devagar, coluna alta.","3>4":"Rola para a frente até ficares de barriga para baixo.","3>1":"Rola para as costas e abraça os joelhos.","3>5":"Senta-te e coloca-te em quatro apoios.","3>2":"Empurra o chão e senta-te com a coluna alta.","3>0":"Senta-te e levanta-te devagar.","4>5":"Empurra o chão com as mãos e coloca-te em quatro apoios.","4>2":"Empurra o chão, recua para os calcanhares e senta-te.","4>1":"Rola para o lado e depois para as costas.","4>3":"Rola para o lado, com a cabeça apoiada no braço.","4>0":"Empurra o chão, senta-te e levanta-te devagar."};
@@ -273,8 +274,17 @@ function del(p,i){const [e]=plan[p].splice(i,1);undo={p,i,e};render();$("ts").hi
 $("tu").onclick=()=>{if(!undo)return;plan[undo.p].splice(undo.i,0,undo.e);undo=null;$("ts").hidden=true;render()};
 $("out").onclick=e=>{const dl=e.target.closest(".del");if(dl)return del(dl.dataset.p,+dl.dataset.i);const b=e.target.closest(".sw");if(b)swap(b.dataset.p,+b.dataset.i);else{const a=e.target.closest(".pl");if(a)return openAdd(a.dataset.p);const g=e.target.closest(".tg");if(g){const q=g.dataset.p;col[q]=!col[q];g.setAttribute("aria-expanded",!col[q]);g.querySelector(".chev").classList.toggle("shut",!!col[q]);g.closest(".card").querySelector(".cb").classList.toggle("shut",!!col[q]);return}const x=e.target.closest(".ex");if(x)showDesc(plan[x.dataset.p][+x.dataset.i])}};
 $("dur").onclick=e=>{const b=e.target.closest("button");if(!b)return;dur=+b.dataset.d;TG=TGS[dur];[...$("dur").children].forEach(x=>x.classList.toggle("on",x===b));build()};
-$("copy").onclick=()=>{cp=null;let t=`Aula de Pilates · ${LN[lvl]} · ${dur} min\n`;for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=tr2(e)+`- ${e.n} (${e.m} min)\n`)}
-const c=$("copy").lastChild;try{navigator.clipboard.writeText(t);c.textContent="Copiado"}catch(x){c.textContent="Não foi possível"}setTimeout(()=>c.textContent="Copiar",1500)};
+const lbl=()=>`Aula de Pilates · ${LN[lvl]} · ${dur} min`;
+function txt(){cp=null;let t=lbl()+"\n";for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=tr2(e)+`- ${e.n} (${e.m} min)\n`)}return t}
+function brief(){let t=lbl()+"\n";for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=`- ${e.n} (${e.m} min)\n`)}return t}
+async function dl(){const name=`aula-pilates-${{F:"facil",I:"intermedio",D:"dificil"}[lvl]}-${dur}min.txt`,data=txt();
+try{const d=window.claude&&await window.claude.use("downloads");if(d){await d.save({filename:name,data});return}}catch(e){if(e&&e.code==="declined")return}
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"text/plain"}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
+function mail(){const a=document.createElement("a");a.href="mailto:?subject="+encodeURIComponent(lbl())+"&body="+encodeURIComponent(brief());a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}
+function openShare(){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>Partilhar aula</h2><p class="muted">${LN[lvl]} · ${dur} min</p></div><div class="opts"><button class="btn outline opt" id="sdl">${ic("download")}Descarregar (.txt)</button><button class="btn outline opt" id="sml">${ic("mail")}Enviar por email</button><button class="btn outline opt" id="scp">${ic("copy")}Copiar texto</button></div>`);
+$("sdl").onclick=dl;$("sml").onclick=mail;
+$("scp").onclick=()=>{const b=$("scp");try{navigator.clipboard.writeText(txt());b.lastChild.textContent="Copiado"}catch(x){b.lastChild.textContent="Não foi possível copiar"}}}
+$("share").onclick=async()=>{if(!plan)return;if(matchMedia("(max-width:767px)").matches&&navigator.share){try{await navigator.share({title:"Aula de Pilates",text:txt()});return}catch(e){if(e&&e.name==="AbortError")return}}openShare()};
 document.onkeydown=e=>{if(e.key==="Escape")drClose()};
 const dr=$("dr"),sh=$("sheet");let y0=null,dy=0;
 const drOpen=h=>{sh.innerHTML=h;sh.style.transform="";dr.hidden=false},drClose=()=>{dr.hidden=true};
