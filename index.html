@@ -63,16 +63,18 @@ h1{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.2
 @keyframes fi{from{opacity:0}}@keyframes zi{from{opacity:0;transform:scale(.96)}}
 .sheet{position:relative}.sx{display:none;position:absolute;top:14px;right:14px;width:32px;height:32px}
 @keyframes sr{from{transform:translateX(100%)}}
-@media (max-width:767px){
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--border);box-shadow:0 -4px 16px rgba(0,0,0,.08)}
 main{padding-bottom:100px}
 .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+@media (min-width:768px){
+.bar{left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:640px;border:1px solid var(--border);border-bottom:0;border-radius:calc(var(--radius) + 4px) calc(var(--radius) + 4px) 0 0}
 }
 @media (min-width:768px){
 .dr{align-items:stretch;justify-content:flex-end}
 .sheet{max-width:420px;height:100%;max-height:100%;border:0;border-left:1px solid var(--border);border-radius:0;padding:24px;animation:sr .3s cubic-bezier(.32,.72,0,1);box-shadow:-10px 0 30px rgba(0,0,0,.15)}
 .grabz{display:none}.sx{display:inline-flex}.dfc{display:none}.sheet .dh{padding-right:36px}
 }
+.tr{display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:var(--muted);border-top:1px solid var(--border);color:var(--muted-foreground);font-size:12px;line-height:1.4}.tr b{color:var(--foreground);font-weight:600}.tr .i{width:14px;height:14px;margin-top:1px}.pos{color:var(--muted-foreground);font-size:12px}
 </style>
 </head>
 <body>
@@ -93,11 +95,14 @@ const RAW=`Respiração costal|F|a|1|2
 Imprint e pélvis neutra|F|a|1|1
 Rotação da bacia|F|a|1|1
 Ponte de aquecimento|F|a|1|2
-Roll Down (rolamento da coluna)|I|a|1|2
+Roll Down (rolamento da coluna)|I|a|0|2
 Roll Up (preparação)|I|a|1|2
 Círculos de ombros|F|a|2|1
 Gato-Vaca|F|a|5|2
 Prancha dinâmica|D|a|5|2
+Rotação de tronco sentada|F|a|2|1
+Inclinação lateral sentada|F|a|2|1
+Elevação de braços em pé|F|a|0|1
 The Hundred (pernas em mesa)|F|m|1|2
 The Hundred (pernas esticadas)|I|m|1|2
 Single Leg Circles|F|m|1|2
@@ -140,7 +145,7 @@ Alongamento isquiotibiais|F|f|1|1
 Alongamento flexores da anca|F|f|5|2
 Spine Stretch final|F|f|2|1
 Mermaid (alongamento lateral)|F|f|2|2
-Roll Down final|F|f|1|2
+Roll Down final|F|f|0|2
 Cobra / Swan suave|I|f|4|1
 Torção deitada|F|f|1|2
 Chest Lift|F|m|1|2
@@ -228,25 +233,38 @@ const W={F:{F:1},I:{F:1,I:3},D:{F:1,I:2,D:4}};
 let custom=[];try{custom=JSON.parse(localStorage.getItem("pilx")||"[]")}catch(e){}
 const lib=()=>RAW.split("\n").map(s=>{const[n,l,p,o,m]=s.split("|");return{n,l,p,o:+o,m:+m}}).concat(custom);
 let lvl="F",plan=null;
-const IC={plus:'<path d="M12 5v14M5 12h14"/>',swap:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',down:'<path d="m6 9 6 6 6-6"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>'};
-const col={};let undo=null,tt;
+const IC={plus:'<path d="M12 5v14M5 12h14"/>',swap:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',arrow:'<path d="M7 7l10 10M17 7v10H7"/>',down:'<path d="m6 9 6 6 6-6"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>'};
+const col={};let undo=null,tt,cp=null;
+const PN={0:"Em pé",1:"De costas",2:"Sentada",3:"De lado",4:"De barriga para baixo",5:"Em quatro apoios"};
+const TR={"0>5":"Ajoelha-te e apoia as mãos no chão.","0>1":"Desce até ficares de costas, com os joelhos fletidos.","0>2":"Senta-te no tapete com a coluna alta.","0>3":"Deita-te de lado, com a cabeça apoiada no braço.","0>4":"Desce até ficares de barriga para baixo.","5>2":"Recua as ancas para os calcanhares e senta-te.","5>1":"Senta-te e deita-te de costas, vértebra a vértebra.","5>3":"Senta-te sobre uma anca e deita-te de lado.","5>4":"Desce o corpo até ficares de barriga para baixo.","5>0":"Recua e levanta-te devagar, coluna alta.","2>1":"Rola devagar para trás até ficares de costas no tapete.","1>2":"Rola para cima, vértebra a vértebra, até te sentares.","1>3":"Rola para um dos lados, apoia a cabeça no braço e empilha as ancas.","1>4":"Rola para o lado e depois para a barriga, com a testa apoiada nas mãos.","1>5":"Rola para o lado, senta-te e apoia mãos e joelhos no chão.","1>0":"Senta-te e levanta-te devagar, coluna alta.","2>3":"Deita-te de lado, com a cabeça apoiada no braço de baixo.","2>4":"Deita-te de barriga para baixo, com a testa apoiada nas mãos.","2>5":"Ajoelha-te e apoia as mãos no chão.","2>0":"Levanta-te devagar, coluna alta.","3>4":"Rola para a frente até ficares de barriga para baixo.","3>1":"Rola para as costas e abraça os joelhos.","3>5":"Senta-te e coloca-te em quatro apoios.","3>2":"Empurra o chão e senta-te com a coluna alta.","3>0":"Senta-te e levanta-te devagar.","4>5":"Empurra o chão com as mãos e coloca-te em quatro apoios.","4>2":"Empurra o chão, recua para os calcanhares e senta-te.","4>1":"Rola para o lado e depois para as costas.","4>3":"Rola para o lado, com a cabeça apoiada no braço.","4>0":"Empurra o chão, senta-te e levanta-te devagar."};
+const trn=(a,b)=>TR[a+">"+b]||"Muda de posição com controlo.";
+Object.assign(DESC,{"Rotação de tronco sentada":"Sentada com a coluna alta, roda o tronco devagar para cada lado, sem mexer a bacia.","Inclinação lateral sentada":"Sentada, inclina o tronco para um lado e para o outro, alongando as costelas.","Elevação de braços em pé":"Em pé, sobe os braços ao teto ao inspirar e desce-os ao expirar, com o abdómen ativo."});
+const LR={F:0,I:1,D:2},full=r=>r.concat([0,1,2,3,4,5].filter(x=>!r.includes(x))),rnd=a=>a[Math.floor(Math.random()*a.length)];
+const MR=[[1,2,3,4,5],[1,3,4,5,2],[2,1,3,4,5],[1,2,5,4,3],[1,3,2,5,4]].map(full);
+const WR={1:[[0,5,2,1],[0,2,5,1],[5,2,1]],2:[[0,5,1,2],[0,1,5,2]],3:[[0,5,2,1,3]]};
+const FR=[[5,4,3,2,1,0],[5,2,4,3,1,0],[4,5,2,3,1,0],[2,5,4,3,1,0],[3,5,4,2,1,0]];
+let RT={a:full([0,5,2,1]),m:MR[0],f:FR[0]};
+const ro=(p,o)=>RT[p].indexOf(o);
+function routes(){const m=rnd(MR),w=full(rnd(WR[m[0]]||WR[1])),L=m[4],fm=FR.filter(r=>r[0]===L);RT={a:w,m,f:rnd(fm.length?fm:FR)}}
+const srt=(p,l)=>l.sort((a,b)=>ro(p,a.o)-ro(p,b.o)||(a.r||0)-(b.r||0)||LR[a.l]-LR[b.l]);
+const tr2=e=>{let r="";if(cp&&cp.o!==e.o)r=`  ↳ ${PN[e.o]}: ${trn(cp.o,e.o)}\n`;cp=e;return r};
 const ic=n=>`<svg class="i" viewBox="0 0 24 24">${IC[n]}</svg>`;
 const $=id=>document.getElementById(id),esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function pick(cands){const w=W[lvl];const ws=cands.map(e=>w[e.l]||0);const t=ws.reduce((a,b)=>a+b,0);if(!t)return null;let r=Math.random()*t;for(let i=0;i<cands.length;i++){r-=ws[i];if(r<=0)return cands[i]}return cands[cands.length-1]}
 const fit=(p,rem,used)=>lib().filter(e=>e.p===p&&e.m<=rem&&!used.has(e.n)&&(W[lvl][e.l]||0)>0);
-function build(){undo=null;$("ts").hidden=true;const used=new Set();plan={};
+function build(){undo=null;$("ts").hidden=true;routes();const used=new Set();plan={};
 for(const p of["a","m","f"]){let rem=TG[p],list=[];
-while(true){let e=pick(fit(p,rem,used)),r=0;if(!e){e=pick(fit(p,rem,new Set(list.filter(x=>x.r).map(x=>x.n))));r=1}if(!e)break;list.push(r?{...e,r:1}:e);used.add(e.n);rem-=e.m}
-if(p!=="f")list.sort((a,b)=>a.o-b.o);plan[p]=list}
+while(true){let e=pick(fit(p,rem,used)),r=0;if(!e){e=pick(fit(p,rem,new Set(list.filter(x=>x.r).map(x=>x.n))));r=1}if(!e){e=pick(fit(p,rem,new Set()));r=1}if(!e)break;list.push(r?{...e,r:1}:e);used.add(e.n);rem-=e.m}
+srt(p,list);plan[p]=list}
 render()}
 function swap(p,i){const used=new Set(Object.values(plan).flat().map(e=>e.n));const cur=plan[p][i];
 const sum=plan[p].reduce((a,e)=>a+e.m,0);const room=TG[p]-sum+cur.m;
-const e=pick(fit(p,room,used));if(e){plan[p][i]=e;render()}}
-function render(){const all=Object.values(plan).flat(),tot=all.reduce((a,e)=>a+e.m,0);
+let c=fit(p,room,used);const sp=c.filter(x=>x.o===cur.o);const e=pick(sp.length?sp:c);if(e){plan[p][i]=e;srt(p,plan[p]);render()}}
+function render(){let pv=null;const all=Object.values(plan).flat(),tot=all.reduce((a,e)=>a+e.m,0);
 let h=`<div class="sum"><span class="badge">${ic("clock")}${tot} min</span><span class="badge">${all.length} exercícios</span><span class="badge">${LN[lvl]}</span></div>`;
 for(const p of["a","m","f"]){const t=plan[p].reduce((a,e)=>a+e.m,0);
 h+=`<section class="card"><div class="ch"><button class="tg" data-p="${p}" aria-expanded="${!col[p]}"><span class="chev${col[p]?' shut':''}">${ic("down")}</span><span><span class="h2">${NM[p]}</span><span class="muted">${plan[p].length} exercícios · ${t} min</span></span></button><button class="btn ghost icon pl" data-p="${p}" aria-label="Adicionar exercício">${ic("plus")}</button></div><div class="cb${col[p]?' shut':''}"><ul>`;
-plan[p].forEach((e,i)=>{h+=`<li class="ex" data-p="${p}" data-i="${i}"><div class="n">${esc(e.n)}<div class="meta"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span>${e.r?'<span class="badge sec">repetição</span>':''}</div></div><span class="min">${e.m} min</span><button class="btn ghost icon sw" data-p="${p}" data-i="${i}" aria-label="Trocar exercício">${ic("swap")}</button><button class="btn ghost icon del" data-p="${p}" data-i="${i}" aria-label="Apagar exercício">${ic("trash")}</button></li>`});
+plan[p].forEach((e,i)=>{if(pv&&pv.o!==e.o)h+=`<li class="tr">${ic("arrow")}<span><b>${PN[e.o]}</b> · ${trn(pv.o,e.o)}</span></li>`;pv=e;h+=`<li class="ex" data-p="${p}" data-i="${i}"><div class="n">${esc(e.n)}<div class="meta"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="pos">${PN[e.o]}</span>${e.r?'<span class="badge sec">repetição</span>':''}</div></div><span class="min">${e.m} min</span><button class="btn ghost icon sw" data-p="${p}" data-i="${i}" aria-label="Trocar exercício">${ic("swap")}</button><button class="btn ghost icon del" data-p="${p}" data-i="${i}" aria-label="Apagar exercício">${ic("trash")}</button></li>`});
 h+=`</ul></div></section>`}
 $("out").innerHTML=h;$("acts").style.display="flex"}
 $("seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;lvl=b.dataset.l;[...$("seg").children].forEach(x=>x.classList.toggle("on",x===b));build()};
@@ -255,7 +273,7 @@ function del(p,i){const [e]=plan[p].splice(i,1);undo={p,i,e};render();$("ts").hi
 $("tu").onclick=()=>{if(!undo)return;plan[undo.p].splice(undo.i,0,undo.e);undo=null;$("ts").hidden=true;render()};
 $("out").onclick=e=>{const dl=e.target.closest(".del");if(dl)return del(dl.dataset.p,+dl.dataset.i);const b=e.target.closest(".sw");if(b)swap(b.dataset.p,+b.dataset.i);else{const a=e.target.closest(".pl");if(a)return openAdd(a.dataset.p);const g=e.target.closest(".tg");if(g){const q=g.dataset.p;col[q]=!col[q];g.setAttribute("aria-expanded",!col[q]);g.querySelector(".chev").classList.toggle("shut",!!col[q]);g.closest(".card").querySelector(".cb").classList.toggle("shut",!!col[q]);return}const x=e.target.closest(".ex");if(x)showDesc(plan[x.dataset.p][+x.dataset.i])}};
 $("dur").onclick=e=>{const b=e.target.closest("button");if(!b)return;dur=+b.dataset.d;TG=TGS[dur];[...$("dur").children].forEach(x=>x.classList.toggle("on",x===b));build()};
-$("copy").onclick=()=>{let t=`Aula de Pilates · ${LN[lvl]} · ${dur} min\n`;for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=`- ${e.n} (${e.m} min)\n`)}
+$("copy").onclick=()=>{cp=null;let t=`Aula de Pilates · ${LN[lvl]} · ${dur} min\n`;for(const p of["a","m","f"]){t+=`\n${NM[p]}\n`;plan[p].forEach(e=>t+=tr2(e)+`- ${e.n} (${e.m} min)\n`)}
 const c=$("copy").lastChild;try{navigator.clipboard.writeText(t);c.textContent="Copiado"}catch(x){c.textContent="Não foi possível"}setTimeout(()=>c.textContent="Copiar",1500)};
 document.onkeydown=e=>{if(e.key==="Escape")drClose()};
 const dr=$("dr"),sh=$("sheet");let y0=null,dy=0;
@@ -265,9 +283,9 @@ sh.addEventListener("pointerdown",e=>{if(e.target.closest(".grabz")){y0=e.client
 sh.addEventListener("pointermove",e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);sh.style.transform=`translateY(${dy}px)`});
 const dEnd=()=>{if(y0===null)return;sh.style.transition="";if(dy>100)drClose();else sh.style.transform="";y0=null};
 sh.addEventListener("pointerup",dEnd);sh.addEventListener("pointercancel",dEnd);
-function showDesc(e){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>${esc(e.n)}</h2><p class="muted">${NM[e.p]}</p></div><div class="sum"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="badge">${ic("clock")}${e.m} min</span></div><p class="desc">${esc(DESC[e.n]||e.d||"Sem descrição.")}</p><div class="df dfc"><button class="btn primary cl">Fechar</button></div>`)}
-function openAdd(p){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>Novo exercício</h2><p class="muted">${NM[p]}</p></div><div class="fld"><label class="lbl" for="nn">Nome</label><input id="nn" placeholder="Ex.: Single Leg Kick"></div><div class="g2 fld"><div><label class="lbl" for="nl">Nível</label><select id="nl"><option value="F">Fácil</option><option value="I">Intermédio</option><option value="D">Difícil</option></select></div><div><label class="lbl" for="nm">Duração</label><select id="nm"><option value="1">1 min</option><option value="2" selected>2 min</option><option value="3">3 min</option></select></div></div><div class="fld"><label class="lbl" for="nd">Descrição (opcional)</label><textarea id="nd" rows="3" placeholder="Como se executa o exercício"></textarea></div><div class="df"><button class="btn outline cl">Cancelar</button><button class="btn primary" id="ok">Adicionar</button></div>`);
-$("ok").onclick=()=>{const n=$("nn").value.trim();if(!n){$("nn").focus();return}const x={n,l:$("nl").value,p,o:3,m:+$("nm").value,d:$("nd").value.trim()};custom.push(x);try{localStorage.setItem("pilx",JSON.stringify(custom))}catch(_){}plan[p].push(x);drClose();render()}}
+function showDesc(e){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>${esc(e.n)}</h2><p class="muted">${NM[e.p]}</p></div><div class="sum"><span class="badge ${e.l}"><i></i>${LN[e.l]}</span><span class="badge">${ic("clock")}${e.m} min</span><span class="badge">${PN[e.o]}</span></div><p class="desc">${esc(DESC[e.n]||e.d||"Sem descrição.")}</p><div class="df dfc"><button class="btn primary cl">Fechar</button></div>`)}
+function openAdd(p){drOpen(`<div class="grabz"><div class="grab"></div></div><button class="btn ghost icon sx cl" aria-label="Fechar">${ic("x")}</button><div class="dh"><h2>Novo exercício</h2><p class="muted">${NM[p]}</p></div><div class="fld"><label class="lbl" for="nn">Nome</label><input id="nn" placeholder="Ex.: Single Leg Kick"></div><div class="g2 fld"><div><label class="lbl" for="nl">Nível</label><select id="nl"><option value="F">Fácil</option><option value="I">Intermédio</option><option value="D">Difícil</option></select></div><div><label class="lbl" for="nm">Duração</label><select id="nm"><option value="1">1 min</option><option value="2" selected>2 min</option><option value="3">3 min</option></select></div></div><div class="fld"><label class="lbl" for="np">Posição</label><select id="np"><option value="1">De costas</option><option value="2">Sentada</option><option value="3">De lado</option><option value="4">De barriga para baixo</option><option value="5">Em quatro apoios</option><option value="0">Em pé</option></select></div><div class="fld"><label class="lbl" for="nd">Descrição (opcional)</label><textarea id="nd" rows="3" placeholder="Como se executa o exercício"></textarea></div><div class="df"><button class="btn outline cl">Cancelar</button><button class="btn primary" id="ok">Adicionar</button></div>`);
+$("ok").onclick=()=>{const n=$("nn").value.trim();if(!n){$("nn").focus();return}const x={n,l:$("nl").value,p,o:+$("np").value,m:+$("nm").value,d:$("nd").value.trim()};custom.push(x);try{localStorage.setItem("pilx",JSON.stringify(custom))}catch(_){}plan[p].push(x);srt(p,plan[p]);drClose();render()}}
 </script>
 </body>
 </html>
